@@ -13,7 +13,7 @@ class BaseModelEntity(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     __tablename__ = "base_models"
 
     name: Mapped[str] = mapped_column(String(255), index=True)
-    provider: Mapped[ModelProvider] = mapped_column(Enum(ModelProvider, name="model_provider"))
+    provider: Mapped[ModelProvider] = mapped_column(Enum(ModelProvider, name="model_provider", values_callable=lambda e: [x.value for x in e]))
     huggingface_id: Mapped[str | None] = mapped_column(String(500), nullable=True)
     architecture: Mapped[str | None] = mapped_column(String(255), nullable=True)
     parameter_count: Mapped[str | None] = mapped_column(String(50), nullable=True)
