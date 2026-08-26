@@ -1,0 +1,16 @@
+celery==5.4.0
+redis==5.0.8
+httpx==0.27.2
+pydantic==2.9.2
+pydantic-settings==2.5.2
+-e ../../packages/hom_core
+-e ../inference
+
+# Real training execution (only needed once actual GPU training is run;
+# the worker degrades gracefully to "GPU unavailable" without these):
+# torch
+# transformers
+# peft
+# LLaMA-Factory (installed separately, see services/training-worker/vendor/)
+
+pytest==8.3.3

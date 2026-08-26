@@ -1,0 +1,101 @@
+name: hom-ai-studio
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-hom}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hom}
+      POSTGRES_DB: ${POSTGRES_DB:-hom_ai_studio}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hom}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/api.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      HOM_ENVIRONMENT: ${HOM_ENVIRONMENT:-development}
+      HOM_DATABASE_URL: ${HOM_DATABASE_URL:-postgresql+psycopg://hom:hom@postgres:5432/hom_ai_studio}
+      HOM_REDIS_URL: ${HOM_REDIS_URL:-redis://redis:6379/0}
+      HOM_SECRET_KEY: ${HOM_SECRET_KEY:-dev-only-insecure-secret-change-me}
+      HOM_INTERNAL_API_TOKEN: ${HOM_INTERNAL_API_TOKEN:-dev-only-internal-token-change-me}
+      HOM_STORAGE_ROOT: ${HOM_STORAGE_ROOT:-/data/storage}
+      HOM_MAX_UPLOAD_SIZE_MB: ${HOM_MAX_UPLOAD_SIZE_MB:-512}
+      HOM_CORS_ORIGINS: ${HOM_CORS_ORIGINS:-["http://localhost:3000"]}
+      HOM_SEED_ON_START: ${HOM_SEED_ON_START:-true}
+      HOM_POSTGRES_HOST: postgres
+      HOM_POSTGRES_PORT: 5432
+    ports:
+      - "8000:8000"
+    volumes:
+      - storage_data:/data/storage
+
+  training-worker:
+    build:
+      context: .
+      dockerfile: services/training-worker/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - backend
+      - redis
+    environment:
+      HOM_REDIS_URL: ${HOM_REDIS_URL:-redis://redis:6379/0}
+      HOM_API_BASE_URL: http://backend:8000
+      HOM_INTERNAL_API_TOKEN: ${HOM_INTERNAL_API_TOKEN:-dev-only-internal-token-change-me}
+      HOM_STORAGE_ROOT: /data/storage
+      HOM_WORKER_KEY: ${HOM_WORKER_KEY:-gpu-worker-01}
+      HOM_COMPUTE_PROVIDER: ${HOM_COMPUTE_PROVIDER:-local}
+      HOM_REMOTE_GPU_AGENT_URL: ${HOM_REMOTE_GPU_AGENT_URL:-}
+      HOM_LLAMA_FACTORY_REPO: ${HOM_LLAMA_FACTORY_REPO:-/srv/vendor/LLaMA-Factory}
+    volumes:
+      - storage_data:/data/storage
+    # Uncomment to pass through GPUs with the NVIDIA Container Toolkit:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+  frontend:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/web.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8000}
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:
+  storage_data:

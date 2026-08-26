@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hom-core"
+version = "0.1.0"
+description = "Shared domain types, schemas and provider interfaces for H.O.M AI Studio"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.6,<3",
+]
+
+[tool.setuptools.packages.find]
+include = ["hom_core*"]
