@@ -16,9 +16,9 @@ class Worker(Base, UUIDPrimaryKeyMixin, TimestampMixin):
 
     worker_key: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     hostname: Mapped[str] = mapped_column(String(255))
-    status: Mapped[WorkerStatus] = mapped_column(Enum(WorkerStatus, name="worker_status"), default=WorkerStatus.OFFLINE)
+    status: Mapped[WorkerStatus] = mapped_column(Enum(WorkerStatus, name="worker_status", values_callable=lambda e: [x.value for x in e]), default=WorkerStatus.OFFLINE)
     compute_provider: Mapped[ComputeProviderKind] = mapped_column(
-        Enum(ComputeProviderKind, name="compute_provider_kind"), default=ComputeProviderKind.LOCAL
+        Enum(ComputeProviderKind, name="compute_provider_kind", values_callable=lambda e: [x.value for x in e]), default=ComputeProviderKind.LOCAL
     )
     gpus: Mapped[list] = mapped_column(JSON, default=list)
     running_job_id: Mapped[str | None] = mapped_column(String(255), nullable=True)

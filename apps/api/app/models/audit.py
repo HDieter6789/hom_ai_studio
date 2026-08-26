@@ -11,7 +11,7 @@ from hom_core.enums import AuditAction
 class AuditLog(Base, UUIDPrimaryKeyMixin):
     __tablename__ = "audit_logs"
 
-    action: Mapped[AuditAction] = mapped_column(Enum(AuditAction, name="audit_action"))
+    action: Mapped[AuditAction] = mapped_column(Enum(AuditAction, name="audit_action", values_callable=lambda e: [x.value for x in e]))
     actor: Mapped[str] = mapped_column(String(255))
     target_type: Mapped[str] = mapped_column(String(100))
     target_id: Mapped[str] = mapped_column(String(255))

@@ -15,12 +15,12 @@ class TrainingJob(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     base_model_id: Mapped[str] = mapped_column(ForeignKey("base_models.id"))
     dataset_id: Mapped[str] = mapped_column(ForeignKey("datasets.id"))
 
-    training_type: Mapped[TrainingType] = mapped_column(Enum(TrainingType, name="training_type"))
-    preset: Mapped[TrainingPreset] = mapped_column(Enum(TrainingPreset, name="training_preset"))
+    training_type: Mapped[TrainingType] = mapped_column(Enum(TrainingType, name="training_type", values_callable=lambda e: [x.value for x in e]))
+    preset: Mapped[TrainingPreset] = mapped_column(Enum(TrainingPreset, name="training_preset", values_callable=lambda e: [x.value for x in e]))
     hyperparameters: Mapped[dict] = mapped_column(JSON, default=dict)
 
     status: Mapped[TrainingJobStatus] = mapped_column(
-        Enum(TrainingJobStatus, name="training_job_status"), default=TrainingJobStatus.QUEUED
+        Enum(TrainingJobStatus, name="training_job_status", values_callable=lambda e: [x.value for x in e]), default=TrainingJobStatus.QUEUED
     )
     provider: Mapped[str] = mapped_column(String(50), default="llama_factory")
     provider_run_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
@@ -37,7 +37,7 @@ class TrainingJob(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     tokens_per_sec: Mapped[float | None] = mapped_column(Float, nullable=True)
     progress_pct: Mapped[float] = mapped_column(Float, default=0)
 
-    error_code: Mapped[ErrorCode | None] = mapped_column(Enum(ErrorCode, name="error_code"), nullable=True)
+    error_code: Mapped[ErrorCode | None] = mapped_column(Enum(ErrorCode, name="error_code", values_callable=lambda e: [x.value for x in e]), nullable=True)
     error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
     failed_step: Mapped[str | None] = mapped_column(String(255), nullable=True)
     suggested_actions: Mapped[list] = mapped_column(JSON, default=list)

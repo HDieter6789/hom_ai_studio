@@ -22,5 +22,5 @@ class BaseModelEntity(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     quantization: Mapped[str | None] = mapped_column(String(50), nullable=True)
     local_path: Mapped[str | None] = mapped_column(String(1024), nullable=True)
     status: Mapped[BaseModelStatus] = mapped_column(
-        Enum(BaseModelStatus, name="base_model_status"), default=BaseModelStatus.UNAVAILABLE
+        Enum(BaseModelStatus, name="base_model_status", values_callable=lambda e: [x.value for x in e]), default=BaseModelStatus.UNAVAILABLE
     )

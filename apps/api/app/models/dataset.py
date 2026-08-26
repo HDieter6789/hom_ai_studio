@@ -12,11 +12,11 @@ class Dataset(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     name: Mapped[str] = mapped_column(String(255), index=True)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     version: Mapped[str] = mapped_column(String(50), default="v1")
-    type: Mapped[DatasetType] = mapped_column(Enum(DatasetType, name="dataset_type"))
-    format: Mapped[DatasetFormat] = mapped_column(Enum(DatasetFormat, name="dataset_format"))
+    type: Mapped[DatasetType] = mapped_column(Enum(DatasetType, name="dataset_type", values_callable=lambda e: [x.value for x in e]))
+    format: Mapped[DatasetFormat] = mapped_column(Enum(DatasetFormat, name="dataset_format", values_callable=lambda e: [x.value for x in e]))
     source: Mapped[str] = mapped_column(String(255), default="upload")
     status: Mapped[DatasetStatus] = mapped_column(
-        Enum(DatasetStatus, name="dataset_status"), default=DatasetStatus.UPLOADING
+        Enum(DatasetStatus, name="dataset_status", values_callable=lambda e: [x.value for x in e]), default=DatasetStatus.UPLOADING
     )
 
     storage_key: Mapped[str] = mapped_column(String(1024))

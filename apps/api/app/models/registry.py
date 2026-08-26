@@ -27,7 +27,7 @@ class ModelVersion(Base, UUIDPrimaryKeyMixin, TimestampMixin):
 
     artifact_location: Mapped[str | None] = mapped_column(String(1024), nullable=True)
     status: Mapped[ModelVersionStatus] = mapped_column(
-        Enum(ModelVersionStatus, name="model_version_status"), default=ModelVersionStatus.EXPERIMENTAL
+        Enum(ModelVersionStatus, name="model_version_status", values_callable=lambda e: [x.value for x in e]), default=ModelVersionStatus.EXPERIMENTAL
     )
     deployment_status: Mapped[str | None] = mapped_column(String(50), nullable=True)
 

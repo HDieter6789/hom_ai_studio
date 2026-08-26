@@ -15,7 +15,7 @@ class Deployment(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     served_model_name: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     endpoint_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     status: Mapped[DeploymentStatus] = mapped_column(
-        Enum(DeploymentStatus, name="deployment_status"), default=DeploymentStatus.PENDING
+        Enum(DeploymentStatus, name="deployment_status", values_callable=lambda e: [x.value for x in e]), default=DeploymentStatus.PENDING
     )
     worker_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
     gpu_memory_utilization: Mapped[float] = mapped_column(Float, default=0.85)
