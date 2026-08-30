@@ -18,6 +18,7 @@ class WorkerSettings(BaseSettings):
 
     # only used when compute_provider == "remote"
     remote_gpu_agent_url: str | None = None
+    remote_gpu_agent_token: str = "dev-only-agent-token-change-me"
 
     llama_factory_repo: str = "./vendor/LLaMA-Factory"
     python_executable: str = "python"

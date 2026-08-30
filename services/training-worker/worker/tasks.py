@@ -20,8 +20,14 @@ def _get_inference_provider() -> VLLMInferenceProvider:
     return VLLMInferenceProvider(registry_path=str(Path(settings.storage_root) / "inference" / "registry.json"))
 
 
-def _get_provider() -> LlamaFactoryTrainingProvider:
+def _get_provider():
     settings = get_worker_settings()
+    if settings.compute_provider == "remote" and settings.remote_gpu_agent_url:
+        from worker.providers.llama_factory_remote import LlamaFactoryRemoteProvider
+        return LlamaFactoryRemoteProvider(
+            agent_url=settings.remote_gpu_agent_url,
+            agent_token=settings.remote_gpu_agent_token,
+        )
     return LlamaFactoryTrainingProvider(
         repo_path=settings.llama_factory_repo,
         work_dir=str(Path(settings.storage_root) / "training_runs"),
