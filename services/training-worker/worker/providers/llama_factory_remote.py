@@ -138,7 +138,7 @@ class LlamaFactoryRemoteProvider(TrainingProvider):
                     message=f"Colab agent unreachable: {exc}",
                     failed_step="remote_status_poll",
                     suggested_actions=[
-                        "Pruefen ob die Colab-Session noch laeuft (Browser-Tab, ngrok-Tunnel)",
+                        "Pruefen ob die Colab-Session noch laeuft (Browser-Tab, Remote-Tunnel)",
                         "UptimeRobot-Monitor-Status pruefen",
                     ],
                 ),
