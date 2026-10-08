@@ -45,7 +45,7 @@ export default function LoginPage() {
     <div className="flex min-h-dvh items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 flex flex-col items-center gap-3 text-center">
-          <span className="flex size-10 items-center justify-center rounded-lg bg-foreground text-background text-lg font-bold">
+          <span className="flex size-10 items-center justify-center rounded-lg bg-red-600 text-white text-lg font-bold">
             H
           </span>
           <div>

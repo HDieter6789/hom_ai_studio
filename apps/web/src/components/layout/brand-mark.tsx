@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 export function BrandMark({ className }: { className?: string }) {
   return (
     <Link href="/" className={cn("flex items-center gap-2.5", className)}>
-      <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-foreground text-background text-sm font-bold">
+      <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-red-600 text-white text-sm font-bold">
         H
       </span>
       <span className="flex flex-col leading-none">
