@@ -158,6 +158,13 @@ cd apps/api
 alembic revision --autogenerate -m "describe the change"
 ```
 
+## Operator handoff
+
+For knowledge/training updates, use the repo-native
+[operator checklist](docs/operator-checklist.md). It defines the minimum provenance,
+dataset, training, registry and deployment checks an operator must complete before
+reporting a founder handoff as testable or deployable.
+
 ## GPU setup
 
 The training worker auto-detects GPUs via `nvidia-smi` (see
