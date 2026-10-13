@@ -24,6 +24,7 @@ import {
   ModelVersionSummaryCard,
   ModelVersionSummaryCardSkeleton,
 } from "@/components/registry/model-version-summary-card";
+import { ReleaseReadinessCard } from "@/components/overview/release-readiness-card";
 import { useOverview } from "@/hooks/use-overview";
 import { formatCompactNumber, formatNumber, formatPercent } from "@/lib/format";
 
@@ -37,6 +38,8 @@ export default function OverviewPage() {
         title="Overview"
         description="A snapshot of your models, training activity, and infrastructure."
       />
+
+      <ReleaseReadinessCard />
 
       {error ? (
         <InlineError message={error} onRetry={refetch} />
