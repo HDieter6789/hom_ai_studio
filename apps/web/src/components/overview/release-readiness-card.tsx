@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {
   ArrowRight,
+  CalendarDays,
   CheckCircle2,
   ClipboardCheck,
   Database,
@@ -48,7 +49,8 @@ export function ReleaseReadinessCard() {
             Ready for founder smoke
           </Badge>
           <Badge variant="outline" className="bg-background/70">
-            Daily marker: AI Studio release readiness - 2026-10-13
+            <CalendarDays data-icon="inline-start" />
+            AI Studio Daily 2026-10-14
           </Badge>
         </div>
         <CardTitle className="text-lg">Release readiness</CardTitle>
@@ -62,19 +64,33 @@ export function ReleaseReadinessCard() {
       </CardHeader>
 
       <CardContent className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
-        <div className="grid gap-3 sm:grid-cols-3">
-          {releaseChecks.map((check) => {
-            const Icon = check.icon;
-            return (
-              <div key={check.label} className="rounded-lg border bg-background/75 p-3">
-                <div className="flex items-center gap-2 text-sm font-medium">
-                  <Icon className="size-4 text-emerald-600" aria-hidden="true" />
-                  {check.label}
+        <div className="grid gap-3">
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-emerald-500/20 bg-emerald-500/5 px-3 py-2">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
+                Today&apos;s release lane
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Dataset, training, registry, and deployment checks are ready for review.
+              </p>
+            </div>
+            <CheckCircle2 className="size-5 shrink-0 text-emerald-600" aria-hidden="true" />
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-3">
+            {releaseChecks.map((check) => {
+              const Icon = check.icon;
+              return (
+                <div key={check.label} className="rounded-lg border bg-background/75 p-3">
+                  <div className="flex items-center gap-2 text-sm font-medium">
+                    <Icon className="size-4 text-emerald-600" aria-hidden="true" />
+                    {check.label}
+                  </div>
+                  <p className="mt-2 text-xs leading-5 text-muted-foreground">{check.detail}</p>
                 </div>
-                <p className="mt-2 text-xs leading-5 text-muted-foreground">{check.detail}</p>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
         <Button asChild variant="outline" className="w-full bg-background/80 sm:w-auto">
