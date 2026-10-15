@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { StatusBadge } from "@/components/shared/status-badge";
+import { RegistryStatusBadge } from "@/components/registry/status-legend";
 import { ApiError, setModelVersionStatus } from "@/lib/api";
 import { formatDateTime } from "@/lib/format";
 import { getStatusVisual } from "@/lib/status";
@@ -83,7 +83,7 @@ function VersionRow({
         </div>
       </div>
       <div className="flex shrink-0 items-center gap-2">
-        <StatusBadge status={version.status} />
+        <RegistryStatusBadge status={version.status} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="size-7" disabled={updating}>

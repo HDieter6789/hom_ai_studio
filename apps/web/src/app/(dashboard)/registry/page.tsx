@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { InlineError } from "@/components/shared/inline-error";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AliasPanel } from "@/components/registry/alias-panel";
+import { RegistryStatusLegend } from "@/components/registry/status-legend";
 import { VersionGroup } from "@/components/registry/version-group";
 import { useModelAliases, useRegistryVersions } from "@/hooks/use-registry";
 import type { ModelVersionOut } from "@/lib/types";
@@ -41,6 +42,8 @@ export default function RegistryPage() {
         title="Registry"
         description="Model versions grouped by name, with status and alias management."
       />
+
+      <RegistryStatusLegend />
 
       {!aliasesLoading && aliases ? (
         <AliasPanel aliases={aliases} versions={versions ?? []} onChanged={refetchAll} />
