@@ -43,32 +43,44 @@ export function AuditLogTable({ entries, loading, error, onRetry }: AuditLogTabl
     );
   }
 
+  const activityLabel =
+    entries.length === 1 ? "1 Ereignis angezeigt" : `${entries.length} Ereignisse angezeigt`;
+
   return (
-    <div className="rounded-xl border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Action</TableHead>
-            <TableHead>Actor</TableHead>
-            <TableHead>Target</TableHead>
-            <TableHead className="text-right">Timestamp</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {entries.map((entry) => (
-            <TableRow key={entry.id}>
-              <TableCell className="font-medium">{entry.action}</TableCell>
-              <TableCell className="text-muted-foreground">{entry.actor ?? "—"}</TableCell>
-              <TableCell className="text-muted-foreground">
-                {entry.target_type ? `${entry.target_type}${entry.target_id ? ` · ${entry.target_id}` : ""}` : "—"}
-              </TableCell>
-              <TableCell className="text-right text-muted-foreground">
-                {formatDateTime(entry.timestamp)}
-              </TableCell>
+    <div className="space-y-3">
+      <div className="flex flex-col gap-1 rounded-lg border bg-muted/30 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm font-medium" aria-live="polite">
+          {activityLabel}
+        </p>
+        <p className="text-xs text-muted-foreground">AI Studio Daily 2026-10-19</p>
+      </div>
+
+      <div className="rounded-xl border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Action</TableHead>
+              <TableHead>Actor</TableHead>
+              <TableHead>Target</TableHead>
+              <TableHead className="text-right">Timestamp</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {entries.map((entry) => (
+              <TableRow key={entry.id}>
+                <TableCell className="font-medium">{entry.action}</TableCell>
+                <TableCell className="text-muted-foreground">{entry.actor ?? "—"}</TableCell>
+                <TableCell className="text-muted-foreground">
+                  {entry.target_type ? `${entry.target_type}${entry.target_id ? ` · ${entry.target_id}` : ""}` : "—"}
+                </TableCell>
+                <TableCell className="text-right text-muted-foreground">
+                  {formatDateTime(entry.timestamp)}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
