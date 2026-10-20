@@ -40,6 +40,7 @@ export default function NewTrainingRunPage() {
   const router = useRouter();
   const { data: baseModels, error: baseModelsError } = useBaseModels();
   const { data: datasets, error: datasetsError } = useDatasets();
+  const step2HeadingRef = React.useRef<HTMLHeadingElement>(null);
 
   const [step, setStep] = React.useState<1 | 2>(1);
   const [name, setName] = React.useState("");
@@ -61,6 +62,15 @@ export default function NewTrainingRunPage() {
   }
 
   const step1Valid = Boolean(name.trim() && baseModelId && datasetId);
+  const selectedBaseModel = baseModels?.find((model) => model.id === baseModelId)?.name;
+  const selectedDataset = datasets?.find((dataset) => dataset.id === datasetId)?.name;
+  const selectedPreset = TRAINING_PRESETS.find((item) => item.value === preset)?.title;
+
+  React.useEffect(() => {
+    if (step === 2) {
+      step2HeadingRef.current?.focus();
+    }
+  }, [step]);
 
   async function handleSubmit() {
     setSubmitting(true);
@@ -210,6 +220,37 @@ export default function NewTrainingRunPage() {
       ) : (
         <Card>
           <CardContent className="flex flex-col gap-6">
+            <section
+              className="rounded-lg border bg-muted/30 p-4"
+              aria-labelledby="training-selection-summary"
+            >
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                <div>
+                  <h2
+                    ref={step2HeadingRef}
+                    id="training-selection-summary"
+                    tabIndex={-1}
+                    className="text-sm font-semibold outline-none"
+                  >
+                    Auswahl pruefen
+                  </h2>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Kontrolliere die gewaehlten Eckdaten vor dem Trainingsstart.
+                  </p>
+                </div>
+                <span className="mt-2 text-xs font-medium text-muted-foreground sm:mt-0 sm:text-right">
+                  AI Studio Daily 2026-10-20
+                </span>
+              </div>
+
+              <dl className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <SelectionSummaryItem label="Run-Name" value={name.trim()} />
+                <SelectionSummaryItem label="Basismodell" value={selectedBaseModel} />
+                <SelectionSummaryItem label="Dataset" value={selectedDataset} />
+                <SelectionSummaryItem label="Preset" value={selectedPreset} />
+              </dl>
+            </section>
+
             <div>
               <h3 className="text-sm font-medium">
                 {preset === "custom" ? "Custom hyperparameters" : "Preset hyperparameters"}
@@ -246,6 +287,17 @@ export default function NewTrainingRunPage() {
           </CardContent>
         </Card>
       )}
+    </div>
+  );
+}
+
+function SelectionSummaryItem({ label, value }: { label: string; value?: string }) {
+  return (
+    <div className="min-w-0 rounded-md bg-background px-3 py-2.5 shadow-sm ring-1 ring-border/70">
+      <dt className="text-xs font-medium text-muted-foreground">{label}</dt>
+      <dd className="mt-1 break-words text-sm font-medium">
+        {value || "Nicht ausgewaehlt"}
+      </dd>
     </div>
   );
 }
