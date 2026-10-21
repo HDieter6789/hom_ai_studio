@@ -12,8 +12,34 @@ interface TrainingJobRowProps {
   datasetName?: string;
 }
 
+function formatElapsedRuntime(value: string | null): string | null {
+  if (!value) return null;
+
+  const startedAt = new Date(value).getTime();
+  if (Number.isNaN(startedAt)) return null;
+
+  const elapsedMinutes = Math.max(0, Math.floor((Date.now() - startedAt) / 60_000));
+  if (elapsedMinutes < 1) return "unter 1 Min.";
+  if (elapsedMinutes < 60) return `${elapsedMinutes} Min.`;
+
+  const elapsedHours = Math.floor(elapsedMinutes / 60);
+  const remainingMinutes = elapsedMinutes % 60;
+  if (elapsedHours < 24) {
+    return remainingMinutes > 0
+      ? `${elapsedHours} Std. ${remainingMinutes} Min.`
+      : `${elapsedHours} Std.`;
+  }
+
+  const elapsedDays = Math.floor(elapsedHours / 24);
+  const remainingHours = elapsedHours % 24;
+  return remainingHours > 0
+    ? `${elapsedDays} T. ${remainingHours} Std.`
+    : `${elapsedDays} T.`;
+}
+
 export function TrainingJobRow({ job, baseModelName, datasetName }: TrainingJobRowProps) {
   const showProgress = isActiveTrainingStatus(job.status);
+  const elapsedRuntime = showProgress ? formatElapsedRuntime(job.started_at) : null;
 
   return (
     <Link
@@ -31,11 +57,19 @@ export function TrainingJobRow({ job, baseModelName, datasetName }: TrainingJobR
         <StatusBadge status={job.status} className="shrink-0" />
       </div>
       {showProgress ? (
-        <div className="flex items-center gap-2.5">
-          <Progress value={job.progress_pct ?? 0} className="h-1.5" />
-          <span className="w-10 shrink-0 text-right text-xs tabular-nums text-muted-foreground">
-            {Math.round(job.progress_pct ?? 0)}%
-          </span>
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2.5">
+            <Progress value={job.progress_pct ?? 0} className="h-1.5" />
+            <span className="w-10 shrink-0 text-right text-xs tabular-nums text-muted-foreground">
+              {Math.round(job.progress_pct ?? 0)}%
+            </span>
+          </div>
+          {elapsedRuntime ? (
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+              <span className="tabular-nums">laeuft seit {elapsedRuntime}</span>
+              <span>AI Studio Daily 2026-10-21</span>
+            </div>
+          ) : null}
         </div>
       ) : (
         <div className="text-xs text-muted-foreground">
